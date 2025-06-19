@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SK8 Shop</title>
+</head>
+<body>
+    <h1>SK8 Clothing</h1>
+
+    <h3>Filter by category:</h3>
+    <ul>
+        <li><a href="/">All</a></li>
+        <li><a href="/?category=hoodie">Hoodies</a></li>
+        <li><a href="/?category=pants">Pants</a></li>
+        <li><a href="/?category=shoes">Shoes</a></li>
+    </ul>
+
+    <h2>Products</h2>
+    <ul>
+        {% for product in products %}
+        <li>
+            {{ product.name }} — ${{ product.price }}
+            <a href="{% url 'add_to_cart' product.id %}">[Add to Cart]</a>
+        </li>
+        {% endfor %}
+    </ul>
+
+    <hr>
+    <a href="{% url 'cart' %}">🛒 Go to Cart</a>
+</body>
+</html>
