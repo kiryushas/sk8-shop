@@ -1,17 +1,15 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Cart - SK8 Shop</title>
+    <title>Your Cart</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #fafafa;
+            background: #f5f5f5;
             padding: 40px;
-            color: #333;
         }
 
         h1 {
-            font-size: 36px;
             color: #111;
         }
 
@@ -23,41 +21,34 @@
             box-shadow: 2px 4px rgba(0, 0, 0, 0.1);
         }
 
-        .cart-item strong {
+        .total {
             font-size: 18px;
+            font-weight: bold;
+            margin-top: 20px;
         }
 
         .checkout {
-            margin-top: 30px;
-            padding: 15px 25px;
-            background-color: #2ecc71;
-            color: #fff;
-            border: none;
-            border-radius: 6px;
-            font-size: 16px;
-            cursor: pointer;
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #2ecc71;
+            color: white;
             text-decoration: none;
+            border-radius: 5px;
         }
 
         .checkout:hover {
-            background-color: #27ae60;
+            background: #27ae60;
         }
 
-        a.back {
-            display: inline-block;
-            margin-left: 20px;
+        .back {
+            margin-left: 15px;
             color: #3498db;
             text-decoration: none;
         }
 
-        a.back:hover {
+        .back:hover {
             text-decoration: underline;
-        }
-
-        .total {
-            font-size: 18px;
-            margin-top: 20px;
-            font-weight: bold;
         }
     </style>
 </head>
@@ -66,19 +57,19 @@
 
     {% if cart %}
         {% for item in cart %}
-            <div class="cart-item">
-                <strong>{{ item.product.name }}</strong><br>
-                Price: ${{ item.product.price }}<br>
-                Quantity: {{ item.quantity }}<br>
-                Subtotal: ${{ item.product.price|floatformat:2|add:"0"|floatformat:"2"|floatformat:2|floatformat:"2" }} × {{ item.quantity }} = ${{ item.product.price|floatformat:2|floatformat:"2"|add:"0"|floatformat:"2"|floatformat:2|floatformat:"2"|add:item.quantity|floatformat:2 }}
-            </div>
+        <div class="cart-item">
+            <strong>{{ item.product.name }}</strong><br>
+            Price: ${{ item.product.price }}<br>
+            Quantity: {{ item.quantity }}<br>
+            Subtotal: ${{ item.subtotal }}
+        </div>
         {% endfor %}
-        <p class="total">Total: ${{ total }}</p>
+        <div class="total">Total: ${{ total }}</div>
         <a class="checkout" href="#">Proceed to Checkout</a>
         <a class="back" href="{% url 'product_list' %}">← Continue Shopping</a>
     {% else %}
         <p>Your cart is empty.</p>
-        <a class="back" href="{% url 'product_list' %}">← Browse Products</a>
+        <a class="back" href="{% url 'product_list' %}">← Back to products</a>
     {% endif %}
 </body>
 </html>
