@@ -42,7 +42,7 @@
         .product-card {
             background: white;
             border-radius: 10px;
-            box-shadow: 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
             padding: 15px;
             width: 250px;
             text-align: center;
@@ -68,6 +68,10 @@
             font-size: 14px;
         }
 
+        .product-card a:hover {
+            text-decoration: underline;
+        }
+
         .cart-link {
             display: inline-block;
             margin-top: 40px;
@@ -88,7 +92,7 @@
 
     <div class="category-filter">
         <h2>Filter by category:</h2>
-        <a href="?">All</a>
+        <a href="{% url 'product_list' %}">All</a>
         <a href="?category=hoodie">Hoodies</a>
         <a href="?category=pants">Pants</a>
         <a href="?category=shoes">Shoes</a>
@@ -100,11 +104,10 @@
                 {% if product.image %}
                     <img src="{{ product.image.url }}" alt="{{ product.name }}">
                 {% else %}
-                    <img src="https://via.placeholder.com/250x200.png?text=No+Image" alt="No image">
+                    <img src="https://via.placeholder.com/250x200.png?text=No+Image" alt="No image available">
                 {% endif %}
                 <strong>{{ product.name }}</strong>
-                ${{ product.price }}
-                <br>
+                <div>${{ product.price }}</div>
                 <a href="{% url 'add_to_cart' product.id %}">Add to Cart</a>
             </div>
         {% endfor %}
