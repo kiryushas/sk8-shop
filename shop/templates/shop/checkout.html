@@ -18,7 +18,7 @@
             border-radius: 8px;
             max-width: 500px;
         }
-        input, button {
+        input, textarea, button {
             display: block;
             width: 100%;
             padding: 12px;
@@ -26,6 +26,7 @@
             border-radius: 6px;
             border: 1px solid #ccc;
             font-size: 16px;
+            box-sizing: border-box;
         }
         button {
             background-color: #5a2ef5;
@@ -42,7 +43,10 @@
     <h1>Checkout</h1>
     <form method="post">
         {% csrf_token %}
-        {{ form.as_p }}
+        {{ form.full_name.label_tag }} {{ form.full_name }}
+        {{ form.address.label_tag }} {{ form.address }}
+        {{ form.phone.label_tag }} {{ form.phone }}
+        {{ form.payment_info.label_tag }} {{ form.payment_info }}
         <button type="submit">Submit Order</button>
     </form>
 </body>

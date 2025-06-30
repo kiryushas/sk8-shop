@@ -25,8 +25,12 @@ class Order(models.Model):
     address = models.CharField(max_length=255, blank=False, default='Unknown address')
     phone = models.CharField(max_length=20, blank=False, default='')
 
+    # Новое поле для информации об оплате
+    payment_info = models.CharField(max_length=255, blank=True, default='')
+
     def __str__(self):
-        return f"Order #{self.id} by {self.user.username}"
+        username = self.user.username if self.user else "Guest"
+        return f"Order #{self.id} by {username}"
 
 
 class OrderItem(models.Model):

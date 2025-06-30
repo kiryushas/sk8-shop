@@ -4,6 +4,7 @@ from django.contrib.auth.forms import UserCreationForm
 from .models import Product, Order, OrderItem
 from .forms import OrderForm
 
+# Отображение списка товаров
 def product_list(request):
     category = request.GET.get('category')
     products = Product.objects.all()
@@ -11,6 +12,7 @@ def product_list(request):
         products = products.filter(category=category)
     return render(request, 'shop/product_list.html', {'products': products})
 
+# Добавление товара в корзину
 def add_to_cart(request, product_id):
     cart = request.session.get('cart', [])
     for item in cart:
@@ -22,12 +24,14 @@ def add_to_cart(request, product_id):
     request.session['cart'] = cart
     return redirect('product_list')
 
+# Удаление товара из корзины
 def remove_from_cart(request, product_id):
     cart = request.session.get('cart', [])
     cart = [item for item in cart if item['product_id'] != product_id]
     request.session['cart'] = cart
     return redirect('cart')
 
+# Просмотр корзины
 def cart_view(request):
     cart = request.session.get('cart', [])
     cart_items = []
@@ -47,6 +51,7 @@ def cart_view(request):
         'total': round(total, 2)
     })
 
+# Регистрация
 def register(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
@@ -58,6 +63,7 @@ def register(request):
         form = UserCreationForm()
     return render(request, 'shop/register.html', {'form': form})
 
+# Оформление заказа
 def checkout_view(request):
     cart = request.session.get('cart', [])
     if not cart:
@@ -68,14 +74,18 @@ def checkout_view(request):
         if form.is_valid():
             order = form.save(commit=False)
             if request.user.is_authenticated:
-                order.user = request.user  # привязываем заказ к пользователю, если он вошёл
+                order.user = request.user
             order.save()
 
             for item in cart:
                 product = get_object_or_404(Product, id=item['product_id'])
                 OrderItem.objects.create(order=order, product=product, quantity=item['quantity'])
 
-            request.session['cart'] = []  # очищаем корзину
+            # payment_info можно обработать или просто вывести
+            payment_info = form.cleaned_data.get('payment_info')
+            print(f'Оплата получена: {payment_info}')  # Для примера
+
+            request.session['cart'] = []
             return render(request, 'shop/checkout_success.html', {'order': order})
     else:
         form = OrderForm()
