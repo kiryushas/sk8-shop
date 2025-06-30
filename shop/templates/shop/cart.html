@@ -90,7 +90,7 @@
             </div>
         {% endfor %}
         <div class="total">Total: ${{ total }}</div>
-        <a class="checkout" href="#">Proceed to Checkout</a>
+        <a class="checkout" href="{% url 'checkout' %}">Proceed to Checkout</a>
         <a class="back" href="{% url 'product_list' %}">← Continue Shopping</a>
     {% else %}
         <p>Your cart is empty.</p>

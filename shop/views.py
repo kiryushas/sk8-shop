@@ -83,3 +83,32 @@ def checkout(request):
 
     request.session['cart'] = []  # очистка корзины после заказа
     return render(request, 'shop/checkout_success.html', {'order': order})
+
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Order, OrderItem, Product
+from .forms import OrderForm
+
+@login_required
+def checkout_view(request):
+    cart = request.session.get('cart', [])
+    if not cart:
+        return redirect('cart')  # если корзина пустая, перекинуть на корзину
+
+    if request.method == 'POST':
+        form = OrderForm(request.POST)
+        if form.is_valid():
+            order = form.save(commit=False)
+            order.user = request.user
+            order.save()
+
+            for item in cart:
+                product = get_object_or_404(Product, id=item['product_id'])
+                OrderItem.objects.create(order=order, product=product, quantity=item['quantity'])
+
+            request.session['cart'] = []  # очищаем корзину
+            return render(request, 'shop/checkout_success.html', {'order': order})
+    else:
+        form = OrderForm()
+
+    return render(request, 'shop/checkout.html', {'form': form})

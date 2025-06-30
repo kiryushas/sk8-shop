@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Checkout</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f3f3f3; padding: 40px; }
+        form { background: white; padding: 20px; border-radius: 8px; max-width: 400px; margin: auto; }
+        label { display: block; margin-top: 15px; }
+        input, textarea { width: 100%; padding: 8px; margin-top: 5px; }
+        button { margin-top: 20px; padding: 10px; background: #5a2ef5; color: white; border: none; border-radius: 5px; width: 100%; }
+        a { display: block; margin-top: 15px; text-align: center; color: #5a2ef5; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <h1>Checkout</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Place Order</button>
+    </form>
+    <a href="{% url 'cart' %}">← Back to Cart</a>
+</body>
+</html>
