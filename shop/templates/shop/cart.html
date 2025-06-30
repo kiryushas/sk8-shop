@@ -7,22 +7,44 @@
             font-family: Arial, sans-serif;
             background: #f5f5f5;
             padding: 40px;
+            color: #333;
         }
 
         h1 {
             color: #111;
+            font-size: 32px;
         }
 
         .cart-item {
             background: #fff;
-            padding: 15px;
-            margin-bottom: 15px;
-            border-radius: 8px;
-            box-shadow: 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .cart-item p {
+            margin: 6px 0;
+        }
+
+        .remove-btn {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 6px 12px;
+            background: #e74c3c;
+            color: #fff;
+            border: none;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .remove-btn:hover {
+            background: #c0392b;
         }
 
         .total {
-            font-size: 18px;
+            font-size: 20px;
             font-weight: bold;
             margin-top: 20px;
         }
@@ -35,6 +57,7 @@
             color: white;
             text-decoration: none;
             border-radius: 5px;
+            font-size: 16px;
         }
 
         .checkout:hover {
@@ -45,6 +68,7 @@
             margin-left: 15px;
             color: #3498db;
             text-decoration: none;
+            font-size: 16px;
         }
 
         .back:hover {
@@ -57,12 +81,13 @@
 
     {% if cart %}
         {% for item in cart %}
-        <div class="cart-item">
-            <strong>{{ item.product.name }}</strong><br>
-            Price: ${{ item.product.price }}<br>
-            Quantity: {{ item.quantity }}<br>
-            Subtotal: ${{ item.subtotal }}
-        </div>
+            <div class="cart-item">
+                <p><strong>{{ item.product.name }}</strong></p>
+                <p>Price: ${{ item.product.price }}</p>
+                <p>Quantity: {{ item.quantity }}</p>
+                <p>Subtotal: ${{ item.subtotal }}</p>
+                <a href="{% url 'remove_from_cart' item.product.id %}" class="remove-btn">Remove</a>
+            </div>
         {% endfor %}
         <div class="total">Total: ${{ total }}</div>
         <a class="checkout" href="#">Proceed to Checkout</a>
