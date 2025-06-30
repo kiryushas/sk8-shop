@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: sk8-shop
+    env: python
+    buildCommand: "./manage.py collectstatic --no-input"
+    startCommand: "gunicorn config.wsgi:application"
+    staticPublishPath: staticfiles
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: config.settings
+      - key: PYTHON_VERSION
+        value: 3.11
+
+static:
+  - name: media
+    path: media
