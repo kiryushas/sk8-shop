@@ -2,6 +2,64 @@
 <html>
 <head>
     <title>SK8 Shop</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f3f3f3;
+            padding: 40px;
+            color: #333;
+        }
+
+        h1 {
+            font-size: 36px;
+            color: #111;
+        }
+
+        h3 {
+            margin-top: 30px;
+            font-size: 22px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 12px;
+        }
+
+        a {
+            color: #5c3dff;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .product {
+            background: #fff;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .cart-link {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 15px;
+            background: #5c3dff;
+            color: white;
+            border-radius: 6px;
+            text-decoration: none;
+        }
+
+        .cart-link:hover {
+            background: #4330b0;
+        }
+    </style>
 </head>
 <body>
     <h1>SK8 Clothing</h1>
@@ -17,14 +75,13 @@
     <h2>Products</h2>
     <ul>
         {% for product in products %}
-        <li>
-            {{ product.name }} — ${{ product.price }}
-            <a href="{% url 'add_to_cart' product.id %}">[Add to Cart]</a>
+        <li class="product">
+            <strong>{{ product.name }}</strong> — ${{ product.price }}<br>
+            <a href="{% url 'add_to_cart' product.id %}">Add to Cart</a>
         </li>
         {% endfor %}
     </ul>
 
-    <hr>
-    <a href="{% url 'cart' %}">🛒 Go to Cart</a>
+    <a href="{% url 'cart' %}" class="cart-link">🛒 Go to Cart</a>
 </body>
 </html>
