@@ -8,6 +8,10 @@
             background: #f5f5f5;
             padding: 40px;
         }
+        h1 {
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
         form {
             background: white;
             padding: 20px;
@@ -35,9 +39,9 @@
     </style>
     <script>
         function togglePaymentFields() {
-            const method = document.getElementById('payment_method').value;
-            document.getElementById('card-fields').style.display = (method === 'card') ? 'block' : 'none';
-            document.getElementById('crypto-fields').style.display = (method === 'crypto') ? 'block' : 'none';
+            const method = document.getElementById('payment-method').value;
+            document.getElementById('card-fields').style.display = method === 'card' ? 'block' : 'none';
+            document.getElementById('crypto-fields').style.display = method === 'crypto' ? 'block' : 'none';
         }
     </script>
 </head>
@@ -47,8 +51,8 @@
         {% csrf_token %}
         {{ form.as_p }}
 
-        <label for="payment_method">Payment Method:</label>
-        <select name="payment_method" id="payment_method" onchange="togglePaymentFields()" required>
+        <label for="payment-method">Payment Method:</label>
+        <select id="payment-method" name="payment_method" onchange="togglePaymentFields()" required>
             <option value="">Select</option>
             <option value="card">Card</option>
             <option value="crypto">Crypto</option>
@@ -62,13 +66,13 @@
 
         <div id="crypto-fields" style="display: none;">
             <select name="crypto_network">
-                <option value="">Choose Network</option>
+                <option value="">Choose network</option>
                 <option value="TRC20">TRC20</option>
                 <option value="BNB">BNB</option>
                 <option value="Ethereum">Ethereum</option>
                 <option value="Polygon">Polygon</option>
             </select>
-            <input type="text" name="wallet_address" placeholder="Your Wallet Address">
+            <input type="text" name="wallet_address" placeholder="Your wallet address">
         </div>
 
         <button type="submit">Submit Order</button>
