@@ -45,3 +45,10 @@ def cart_view(request):
         'cart': cart_items,
         'total': round(total, 2)
     })
+
+# Удаление товара из корзины
+def remove_from_cart(request, product_id):
+    cart = request.session.get('cart', [])
+    cart = [item for item in cart if item['product_id'] != product_id]
+    request.session['cart'] = cart
+    return redirect('cart')
