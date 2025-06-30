@@ -1,3 +1,6 @@
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login
+from django.shortcuts import render, redirect
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Product
 
@@ -52,3 +55,31 @@ def remove_from_cart(request, product_id):
     cart = [item for item in cart if item['product_id'] != product_id]
     request.session['cart'] = cart
     return redirect('cart')
+
+def register(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('product_list')
+    else:
+        form = UserCreationForm()
+    return render(request, 'shop/register.html', {'form': form})
+
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404
+
+@login_required
+def checkout(request):
+    cart = request.session.get('cart', [])
+    if not cart:
+        return redirect('cart')  # если корзина пустая, редирект на корзину
+
+    order = Order.objects.create(user=request.user)
+    for item in cart:
+        product = get_object_or_404(Product, id=item['product_id'])
+        OrderItem.objects.create(order=order, product=product, quantity=item['quantity'])
+
+    request.session['cart'] = []  # очистка корзины после заказа
+    return render(request, 'shop/checkout_success.html', {'order': order})

@@ -15,6 +15,21 @@
             color: #111;
         }
 
+        .auth-links {
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+
+        .auth-links a {
+            color: #5a2ef5;
+            text-decoration: none;
+            margin-right: 15px;
+        }
+
+        .auth-links a:hover {
+            text-decoration: underline;
+        }
+
         .category-filter {
             margin-bottom: 30px;
         }
@@ -89,6 +104,15 @@
 </head>
 <body>
     <h1>SK8 Clothing</h1>
+
+    <div class="auth-links">
+        {% if user.is_authenticated %}
+            Welcome, {{ user.username }}! <a href="{% url 'logout' %}">Logout</a>
+        {% else %}
+            <a href="{% url 'login' %}">Login</a>
+            <a href="{% url 'register' %}">Register</a>
+        {% endif %}
+    </div>
 
     <div class="category-filter">
         <h2>Filter by category:</h2>
