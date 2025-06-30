@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>SK8 Shop</title>
+    <title>SK8 Clothing</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -15,72 +15,100 @@
             color: #111;
         }
 
-        h3 {
-            margin-top: 30px;
+        .category-filter {
+            margin-bottom: 30px;
+        }
+
+        .category-filter h2 {
             font-size: 22px;
         }
 
-        ul {
-            list-style-type: none;
-            padding: 0;
-        }
-
-        li {
-            margin-bottom: 12px;
-        }
-
-        a {
-            color: #5c3dff;
+        .category-filter a {
+            margin-right: 15px;
             text-decoration: none;
+            color: #5a2ef5;
         }
 
-        a:hover {
+        .category-filter a:hover {
             text-decoration: underline;
         }
 
-        .product {
-            background: #fff;
+        .product-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 2px 4px rgba(0,0,0,0.1);
             padding: 15px;
-            margin: 10px 0;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            width: 250px;
+            text-align: center;
+        }
+
+        .product-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+
+        .product-card strong {
+            font-size: 18px;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .product-card a {
+            color: #5a2ef5;
+            text-decoration: none;
+            font-size: 14px;
         }
 
         .cart-link {
             display: inline-block;
-            margin-top: 20px;
-            padding: 10px 15px;
-            background: #5c3dff;
+            margin-top: 40px;
+            padding: 12px 18px;
+            background: #5a2ef5;
             color: white;
             border-radius: 6px;
             text-decoration: none;
         }
 
         .cart-link:hover {
-            background: #4330b0;
+            background: #4729c9;
         }
     </style>
 </head>
 <body>
     <h1>SK8 Clothing</h1>
 
-    <h3>Filter by category:</h3>
-    <ul>
-        <li><a href="/">All</a></li>
-        <li><a href="/?category=hoodie">Hoodies</a></li>
-        <li><a href="/?category=pants">Pants</a></li>
-        <li><a href="/?category=shoes">Shoes</a></li>
-    </ul>
+    <div class="category-filter">
+        <h2>Filter by category:</h2>
+        <a href="?">All</a>
+        <a href="?category=hoodie">Hoodies</a>
+        <a href="?category=pants">Pants</a>
+        <a href="?category=shoes">Shoes</a>
+    </div>
 
-    <h2>Products</h2>
-    <ul>
+    <div class="product-grid">
         {% for product in products %}
-        <li class="product">
-            <strong>{{ product.name }}</strong> — ${{ product.price }}<br>
-            <a href="{% url 'add_to_cart' product.id %}">Add to Cart</a>
-        </li>
+            <div class="product-card">
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                {% else %}
+                    <img src="https://via.placeholder.com/250x200.png?text=No+Image" alt="No image">
+                {% endif %}
+                <strong>{{ product.name }}</strong>
+                ${{ product.price }}
+                <br>
+                <a href="{% url 'add_to_cart' product.id %}">Add to Cart</a>
+            </div>
         {% endfor %}
-    </ul>
+    </div>
 
     <a href="{% url 'cart' %}" class="cart-link">🛒 Go to Cart</a>
 </body>
