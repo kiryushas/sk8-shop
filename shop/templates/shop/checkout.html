@@ -18,7 +18,7 @@
             border-radius: 8px;
             max-width: 500px;
         }
-        input, button {
+        input, select, button {
             display: block;
             width: 100%;
             padding: 12px;
@@ -37,13 +37,49 @@
             background-color: #4729c9;
         }
     </style>
+    <script>
+        function togglePaymentFields() {
+            const method = document.querySelector('select[name="payment_method"]').value;
+            document.getElementById('card-fields').style.display = method === 'card' ? 'block' : 'none';
+            document.getElementById('crypto-fields').style.display = method === 'crypto' ? 'block' : 'none';
+        }
+    </script>
 </head>
 <body>
     <h1>Checkout</h1>
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
+
+        <label for="payment_method">Payment Method:</label>
+        <select name="payment_method" onchange="togglePaymentFields()" required>
+            <option value="">-- Select --</option>
+            <option value="card">Card</option>
+            <option value="crypto">Crypto</option>
+        </select>
+
+        <div id="card-fields" style="display: none;">
+            <input type="text" name="card_number" placeholder="Card Number">
+            <input type="text" name="expiry_date" placeholder="Expiry Date (MM/YY)">
+            <input type="text" name="cvv" placeholder="CVV">
+        </div>
+
+        <div id="crypto-fields" style="display: none;">
+            <select name="crypto_network">
+                <option value="">Choose Crypto Network</option>
+                <option value="TRC20">TRC20</option>
+                <option value="BNB">BNB</option>
+                <option value="Ethereum">Ethereum</option>
+                <option value="Polygon">Polygon</option>
+            </select>
+            <input type="text" name="wallet_address" placeholder="Wallet Address">
+        </div>
+
         <button type="submit">Submit Order</button>
     </form>
+
+    <script>
+        togglePaymentFields(); // auto-run on load
+    </script>
 </body>
 </html>
