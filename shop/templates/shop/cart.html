@@ -29,7 +29,7 @@
 
         .checkout {
             margin-top: 30px;
-            padding: 15px;
+            padding: 15px 25px;
             background-color: #2ecc71;
             color: #fff;
             border: none;
@@ -45,13 +45,19 @@
 
         a.back {
             display: inline-block;
-            margin-top: 30px;
+            margin-left: 20px;
             color: #3498db;
             text-decoration: none;
         }
 
         a.back:hover {
             text-decoration: underline;
+        }
+
+        .total {
+            font-size: 18px;
+            margin-top: 20px;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -63,15 +69,16 @@
             <div class="cart-item">
                 <strong>{{ item.product.name }}</strong><br>
                 Price: ${{ item.product.price }}<br>
-                Quantity: {{ item.quantity }}
+                Quantity: {{ item.quantity }}<br>
+                Subtotal: ${{ item.product.price|floatformat:2|add:"0"|floatformat:"2"|floatformat:2|floatformat:"2" }} × {{ item.quantity }} = ${{ item.product.price|floatformat:2|floatformat:"2"|add:"0"|floatformat:"2"|floatformat:2|floatformat:"2"|add:item.quantity|floatformat:2 }}
             </div>
         {% endfor %}
-        <p><strong>Total:</strong> ${{ total }}</p>
+        <p class="total">Total: ${{ total }}</p>
         <a class="checkout" href="#">Proceed to Checkout</a>
+        <a class="back" href="{% url 'product_list' %}">← Continue Shopping</a>
     {% else %}
         <p>Your cart is empty.</p>
+        <a class="back" href="{% url 'product_list' %}">← Browse Products</a>
     {% endif %}
-
-    <a class="back" href="{% url 'product_list' %}">← Continue Shopping</a>
 </body>
 </html>
