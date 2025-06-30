@@ -63,7 +63,10 @@ def register(request):
         form = UserCreationForm()
     return render(request, 'shop/register.html', {'form': form})
 
-# Оформление заказа
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Product, Order, OrderItem
+from .forms import OrderForm
+
 def checkout_view(request):
     cart = request.session.get('cart', [])
     if not cart:
@@ -73,21 +76,34 @@ def checkout_view(request):
         form = OrderForm(request.POST)
         if form.is_valid():
             order = form.save(commit=False)
+
+            # Сохраняем платёжную информацию вручную
+            order.payment_method = request.POST.get('payment_method')
+            if order.payment_method == 'card':
+                order.card_number = request.POST.get('card_number')
+                order.expiry_date = request.POST.get('expiry_date')
+                order.cvv = request.POST.get('cvv')
+            elif order.payment_method == 'crypto':
+                order.crypto_network = request.POST.get('crypto_network')
+                order.wallet_address = request.POST.get('wallet_address')
+
+            # Привязка пользователя (если есть)
             if request.user.is_authenticated:
                 order.user = request.user
+
             order.save()
 
+            # Сохраняем товары из корзины
             for item in cart:
                 product = get_object_or_404(Product, id=item['product_id'])
                 OrderItem.objects.create(order=order, product=product, quantity=item['quantity'])
 
-            # payment_info можно обработать или просто вывести
-            payment_info = form.cleaned_data.get('payment_info')
-            print(f'Оплата получена: {payment_info}')  # Для примера
-
+            # Очищаем корзину
             request.session['cart'] = []
+
             return render(request, 'shop/checkout_success.html', {'order': order})
     else:
         form = OrderForm()
 
     return render(request, 'shop/checkout.html', {'form': form})
+

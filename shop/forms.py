@@ -2,28 +2,38 @@ from django import forms
 from .models import Order
 
 class OrderForm(forms.ModelForm):
-    payment_info = forms.CharField(
-        label='Payment Details (Card/Crypto)',
-        max_length=255,
-        required=True,
-        widget=forms.TextInput(attrs={
-            'class': 'form-control',
-            'placeholder': 'Enter card number or crypto wallet address'
-        })
+    PAYMENT_CHOICES = [
+        ('card', 'Card'),
+        ('crypto', 'Crypto'),
+    ]
+
+    payment_method = forms.ChoiceField(
+        choices=PAYMENT_CHOICES,
+        widget=forms.RadioSelect(attrs={'id': 'payment-method'})
     )
+
+    # Для оплаты картой
+    card_number = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': 'Card number'}))
+    card_expiry = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': 'MM/YY'}))
+    card_cvv = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': 'CVV'}))
+
+    # Для оплаты криптой
+    crypto_network = forms.ChoiceField(
+        choices=[
+            ('trc20', 'TRC20'),
+            ('bnb', 'BNB'),
+            ('eth', 'Ethereum'),
+        ],
+        required=False,
+        widget=forms.Select()
+    )
+    crypto_address = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': 'Your wallet address'}))
 
     class Meta:
         model = Order
-        fields = ['full_name', 'address', 'phone', 'payment_info']
+        fields = ['full_name', 'address', 'phone']
         widgets = {
-            'full_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Your name'}),
-            'address': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Shipping address'}),
-            'phone': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Phone number'}),
+            'full_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'address': forms.TextInput(attrs={'class': 'form-control'}),
+            'phone': forms.TextInput(attrs={'class': 'form-control'}),
         }
-
-    def save(self, commit=True):
-        order = super().save(commit=False)
-        order.payment_info = self.cleaned_data['payment_info']
-        if commit:
-            order.save()
-        return order
