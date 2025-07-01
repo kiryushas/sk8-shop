@@ -24,16 +24,53 @@
             filter: drop-shadow(0 0 10px rgba(0,0,0,0.2));
         }
 
-        .content {
+        .content-wrapper {
+            display: flex;
+            gap: 30px;
             max-width: 1200px;
             margin: 40px auto;
             padding: 0 20px;
+        }
+
+        .sidebar {
+            flex: 0 0 200px;
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+        }
+
+        .sidebar h3 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar ul li {
+            margin-bottom: 12px;
+        }
+
+        .sidebar ul li a {
+            text-decoration: none;
+            color: #555;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .sidebar ul li a:hover {
+            color: #7e57c2;
         }
 
         .products {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
             gap: 30px;
+            flex: 1;
         }
 
         .product {
@@ -95,7 +132,7 @@
         .cart-link {
             display: block;
             text-align: center;
-            margin-top: 50px;
+            margin: 50px 0;
         }
 
         .cart-link a {
@@ -113,69 +150,24 @@
         .cart-link a:hover {
             background-color: #e91e63;
         }
-        .content-wrapper {
-    display: flex;
-    gap: 30px;
-    max-width: 1200px;
-    margin: 40px auto;
-    padding: 0 20px;
-}
-
-.sidebar {
-    flex: 0 0 200px;
-    background: #fff;
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
-}
-
-.sidebar h3 {
-    font-size: 18px;
-    margin-bottom: 15px;
-    color: #333;
-}
-
-.sidebar ul {
-    list-style: none;
-    padding: 0;
-}
-
-.sidebar ul li {
-    margin-bottom: 12px;
-}
-
-.sidebar ul li a {
-    text-decoration: none;
-    color: #555;
-    font-weight: 500;
-    transition: color 0.2s ease;
-}
-
-.sidebar ul li a:hover {
-    color: #7e57c2;
-}
     </style>
 </head>
 <body>
-    <header>
-        <img src="/media/product_images/your_uploaded_banner.png" alt="Sk8 Shop Banner">
-    </header>
+<header>
+    <img src="/media/product_images/your_uploaded_banner.png" alt="Sk8 Shop Banner">
+</header>
 
-    <div class="content">
-        <div class="products">
-            {% for product in products %}
-            <div class="content-wrapper">
+<div class="content-wrapper">
     <div class="sidebar">
-        <h3>Category</h3>
+        <h3>Категория</h3>
         <ul>
             <li><a href="?category=hoodie">👕 Hoodie</a></li>
             <li><a href="?category=pants">👖 Pants</a></li>
             <li><a href="?category=shoes">👟 Sneakers</a></li>
-            <li><a href="/">🔄 Show all</a></li>
+            <li><a href="/">🔄 Показать все</a></li>
         </ul>
     </div>
 
-    <!-- Товары -->
     <div class="products">
         {% for product in products %}
         <div class="product">
@@ -186,16 +178,15 @@
                 <h3>{{ product.name }}</h3>
                 <p>{{ product.category }}</p>
                 <div class="price">{{ product.price }} zł</div>
-                <a href="{% url 'add_to_cart' product.id %}" class="btn">Add to cart</a>
+                <a href="{% url 'add_to_cart' product.id %}" class="btn">Добавить в корзину</a>
             </div>
         </div>
         {% endfor %}
     </div>
 </div>
 
-        <div class="cart-link">
-            <a href="{% url 'cart' %}">🛒 Go to cart</a>
-        </div>
-    </div>
+<div class="cart-link">
+    <a href="{% url 'cart' %}">🛒 Перейти в корзину</a>
+</div>
 </body>
 </html>
