@@ -1,43 +1,28 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Order Placed</title>
+    <meta charset="UTF-8">
+    <title>Order Submitted</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Outfit', sans-serif;
             background: #f3f3f3;
-            padding: 40px;
             text-align: center;
+            padding-top: 100px;
         }
-
         h1 {
-            color: #2ecc71;
             font-size: 32px;
+            color: #333;
+            margin-bottom: 20px;
         }
-
         p {
             font-size: 18px;
-            margin-top: 20px;
-        }
-
-        a {
-            display: inline-block;
-            margin-top: 30px;
-            padding: 10px 20px;
-            background: #5a2ef5;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-        }
-
-        a:hover {
-            background: #4729c9;
+            color: #666;
         }
     </style>
 </head>
 <body>
-    <h1>Thank you for your order!</h1>
-    <p>Your order has been successfully placed.</p>
-    <a href="{% url 'product_list' %}">← Continue Shopping</a>
+    <h1>🕐 Waiting for payment</h1>
+    <p>Purchase details will be sent to your email.</p>
 </body>
 </html>
