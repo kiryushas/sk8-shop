@@ -80,64 +80,95 @@
             font-weight: 600;
             color: #444;
         }
-    </style>
-    <script>
-        function togglePaymentFields() {
-            const method = document.getElementById('payment-method').value;
-            document.getElementById('card-fields').style.display = method === 'card' ? 'block' : 'none';
-            document.getElementById('crypto-fields').style.display = method === 'crypto' ? 'block' : 'none';
+
+        .price-display {
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 20px;
         }
-    </script>
+    </style>
 </head>
 <body>
-    <header>
-        <h1>Checkout</h1>
-    </header>
+<header>
+    <h1>Checkout</h1>
+</header>
 
-    <div class="container">
-        <h2>Confirm Your Order</h2>
-        <form method="post" action="{% url 'order_confirmation' %}">
-            {% csrf_token %}
+<div class="container">
+    <h2>Confirm Your Order</h2>
 
-            <input type="text" name="full_name" placeholder="Full Name" required>
-            <input type="text" name="address" placeholder="Address" required>
-            <input type="tel" name="phone" placeholder="Phone" required>
+    <form method="post">
+        {% csrf_token %}
 
-            <label for="payment-method">Payment Method:</label>
-            <select id="payment-method" name="payment_method" onchange="togglePaymentFields()" required>
-                <option value="">Select</option>
-                <option value="card">Card</option>
-                <option value="crypto">Crypto</option>
+        <input type="text" name="full_name" placeholder="Full Name" required>
+        <input type="text" name="address" placeholder="Address" required>
+        <input type="tel" name="phone" placeholder="Phone" required>
+
+        <label for="payment-method">Payment Method:</label>
+        <select id="payment-method" name="payment_method" onchange="togglePaymentFields()" required>
+            <option value="">Select</option>
+            <option value="card">Card</option>
+            <option value="crypto">Crypto</option>
+        </select>
+
+        <div id="card-fields">
+            <input type="text" name="card_number" placeholder="Card Number">
+            <input type="text" name="expiry_date" placeholder="Expiry Date (MM/YY)">
+            <input type="text" name="cvv" placeholder="CVV">
+        </div>
+
+        <div id="crypto-fields">
+            <label for="crypto_network">Crypto Network:</label>
+            <select name="crypto_network">
+                <option value="">Choose network</option>
+                <option value="TRC20">TRC20</option>
+                <option value="BNB">BNB</option>
+                <option value="Ethereum">Ethereum</option>
+                <option value="Polygon">Polygon</option>
             </select>
 
-            <div id="card-fields">
-                <input type="text" name="card_number" placeholder="Card Number">
-                <input type="text" name="expiry_date" placeholder="Expiry Date (MM/YY)">
-                <input type="text" name="cvv" placeholder="CVV">
-            </div>
+            <label>Wallet Address:</label>
+            <input type="text" name="wallet_address" class="readonly-field" value="3MQTRzttkMtsMEy9dRq4Sf1xiSsWKgQkyH" readonly>
+        </div>
 
-            <div id="crypto-fields">
-                <label for="crypto_network">Crypto Network:</label>
-                <select name="crypto_network">
-                    <option value="">Choose network</option>
-                    <option value="TRC20">TRC20</option>
-                    <option value="BNB">BNB</option>
-                    <option value="Ethereum">Ethereum</option>
-                    <option value="Polygon">Polygon</option>
-                </select>
+        <!-- передаем значения в JS -->
+        <div id="price-data"
+             data-total-pln="{{ total_pln|floatformat:2 }}"
+             data-total-usd="{{ total_usd|floatformat:2 }}">
+        </div>
 
-                <label>Wallet Address:</label>
-                <input type="text" class="readonly-field" value="3MQTRzttkMtsMEy9dRq4Sf1xiSsWKgQkyH" readonly>
-            </div>
+        <div class="price-display" id="price-display"></div>
 
-            <div style="margin-top: 20px; font-size: 20px; font-weight: bold;">
-                        Total amount to pay: {{ total }} zł
-            </div>
+        <button type="submit">Submit Order</button>
+    </form>
+</div>
 
-            <button type="submit">Submit Order</button>
-        </form>
-    </div>
+<script>
+    function togglePaymentFields() {
+        const method = document.getElementById('payment-method').value;
+        document.getElementById('card-fields').style.display = method === 'card' ? 'block' : 'none';
+        document.getElementById('crypto-fields').style.display = method === 'crypto' ? 'block' : 'none';
+        updatePriceDisplay();
+    }
 
-    <script>togglePaymentFields();</script>
+    function updatePriceDisplay() {
+        const method = document.getElementById('payment-method').value;
+        const priceData = document.getElementById('price-data');
+        const totalPLN = priceData.dataset.totalPln;
+        const totalUSD = priceData.dataset.totalUsd;
+        const display = document.getElementById('price-display');
+
+        if (method === 'crypto') {
+            display.innerText = 'Amount to pay: $' + totalUSD + ' (via crypto)';
+        } else if (method === 'card') {
+            display.innerText = 'Amount to pay: ' + totalPLN + ' zł (via card)';
+        } else {
+            display.innerText = '';
+        }
+    }
+
+    // Запускаем при загрузке
+    window.onload = togglePaymentFields;
+</script>
+
 </body>
 </html>

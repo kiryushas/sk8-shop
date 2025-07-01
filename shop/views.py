@@ -69,19 +69,27 @@ def checkout_view(request):
     if not cart:
         return redirect('cart')
 
-    # Вычисляем сумму заказа
+    cart_items = []
     total = 0
     for item in cart:
         product = get_object_or_404(Product, id=item['product_id'])
         quantity = item['quantity']
-        total += product.price * quantity
+        subtotal = product.price * quantity
+        total += subtotal
+        cart_items.append({
+            'product': product,
+            'quantity': quantity,
+            'subtotal': round(subtotal, 2)
+        })
+
+    total_pln = round(total, 2)
+    total_usd = round(total_pln / 4, 2)
 
     if request.method == 'POST':
         form = OrderForm(request.POST)
         if form.is_valid():
             order = form.save(commit=False)
 
-            # Дополнительные данные оплаты
             order.payment_method = request.POST.get('payment_method')
             if order.payment_method == 'card':
                 order.card_number = request.POST.get('card_number')
@@ -91,27 +99,25 @@ def checkout_view(request):
                 order.crypto_network = request.POST.get('crypto_network')
                 order.wallet_address = request.POST.get('wallet_address')
 
-            # Привязка пользователя
             if request.user.is_authenticated:
                 order.user = request.user
 
             order.save()
 
-            # Создание OrderItem
             for item in cart:
                 product = get_object_or_404(Product, id=item['product_id'])
                 OrderItem.objects.create(order=order, product=product, quantity=item['quantity'])
 
-            # Очистка корзины
             request.session['cart'] = []
-
-            return redirect('order_confirmation')  # Переход на страницу "ожидание оплаты"
+            return redirect('order_confirmation')
     else:
         form = OrderForm()
 
     return render(request, 'shop/checkout.html', {
         'form': form,
-        'total': round(total, 2)
+        'cart': cart_items,
+        'total_pln': total_pln,
+        'total_usd': total_usd
     })
 
 # Подтверждение заказа
