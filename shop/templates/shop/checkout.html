@@ -40,7 +40,7 @@
 </head>
 <body>
     <h1>Checkout</h1>
-    <form method="post" id="checkout-form">
+    <form method="post" id="checkout-form" action="{% url 'order_confirmation' %}">
         {% csrf_token %}
 
         <input type="text" name="full_name" placeholder="Full Name" required>
