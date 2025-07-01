@@ -113,6 +113,47 @@
         .cart-link a:hover {
             background-color: #e91e63;
         }
+        .content-wrapper {
+    display: flex;
+    gap: 30px;
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.sidebar {
+    flex: 0 0 200px;
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+
+.sidebar h3 {
+    font-size: 18px;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar ul li {
+    margin-bottom: 12px;
+}
+
+.sidebar ul li a {
+    text-decoration: none;
+    color: #555;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.sidebar ul li a:hover {
+    color: #7e57c2;
+}
     </style>
 </head>
 <body>
@@ -123,19 +164,34 @@
     <div class="content">
         <div class="products">
             {% for product in products %}
-            <div class="product">
-                {% if product.image %}
-                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
-                {% endif %}
-                <div class="product-info">
-                    <h3>{{ product.name }}</h3>
-                    <p>{{ product.category }}</p>
-                    <div class="price">{{ product.price }} zł</div>
-                    <a href="{% url 'add_to_cart' product.id %}" class="btn">Add to cart</a>
-                </div>
+            <div class="content-wrapper">
+    <div class="sidebar">
+        <h3>Category</h3>
+        <ul>
+            <li><a href="?category=hoodie">👕 Hoodie</a></li>
+            <li><a href="?category=pants">👖 Pants</a></li>
+            <li><a href="?category=shoes">👟 Sneakers</a></li>
+            <li><a href="/">🔄 Show all</a></li>
+        </ul>
+    </div>
+
+    <!-- Товары -->
+    <div class="products">
+        {% for product in products %}
+        <div class="product">
+            {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}">
+            {% endif %}
+            <div class="product-info">
+                <h3>{{ product.name }}</h3>
+                <p>{{ product.category }}</p>
+                <div class="price">{{ product.price }} zł</div>
+                <a href="{% url 'add_to_cart' product.id %}" class="btn">Add to cart</a>
             </div>
-            {% endfor %}
         </div>
+        {% endfor %}
+    </div>
+</div>
 
         <div class="cart-link">
             <a href="{% url 'cart' %}">🛒 Go to cart</a>
