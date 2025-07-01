@@ -69,6 +69,13 @@ def checkout_view(request):
     if not cart:
         return redirect('cart')
 
+    # Вычисляем сумму заказа
+    total = 0
+    for item in cart:
+        product = get_object_or_404(Product, id=item['product_id'])
+        quantity = item['quantity']
+        total += product.price * quantity
+
     if request.method == 'POST':
         form = OrderForm(request.POST)
         if form.is_valid():
@@ -98,11 +105,14 @@ def checkout_view(request):
             # Очистка корзины
             request.session['cart'] = []
 
-            return redirect('order_confirmation')  # перекидываем на финальную страницу
+            return redirect('order_confirmation')  # Переход на страницу "ожидание оплаты"
     else:
         form = OrderForm()
 
-    return render(request, 'shop/checkout.html', {'form': form})
+    return render(request, 'shop/checkout.html', {
+        'form': form,
+        'total': round(total, 2)
+    })
 
 # Подтверждение заказа
 def order_confirmation_view(request):
