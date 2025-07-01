@@ -1,142 +1,100 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>SK8 Clothing</title>
+    <title>Shop — Products</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f3f3f3;
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
             padding: 40px;
-            color: #333;
         }
-
         h1 {
-            font-size: 36px;
-            color: #111;
-        }
-
-        .auth-links {
-            margin-bottom: 20px;
-            font-size: 16px;
-        }
-
-        .auth-links a {
-            color: #5a2ef5;
-            text-decoration: none;
-            margin-right: 15px;
-        }
-
-        .auth-links a:hover {
-            text-decoration: underline;
-        }
-
-        .category-filter {
-            margin-bottom: 30px;
-        }
-
-        .category-filter h2 {
-            font-size: 22px;
-        }
-
-        .category-filter a {
-            margin-right: 15px;
-            text-decoration: none;
-            color: #5a2ef5;
-        }
-
-        .category-filter a:hover {
-            text-decoration: underline;
-        }
-
-        .product-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-
-        .product-card {
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            padding: 15px;
-            width: 250px;
             text-align: center;
+            margin-bottom: 40px;
         }
-
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: auto;
+        }
+        .product-card {
+            background-color: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transition: 0.2s ease;
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+        }
         .product-card img {
             width: 100%;
-            height: 200px;
+            height: 250px;
             object-fit: cover;
-            border-radius: 6px;
+        }
+        .product-info {
+            padding: 16px;
+        }
+        .product-name {
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+        .product-price {
+            color: #5a2ef5;
+            font-weight: bold;
+            font-size: 16px;
             margin-bottom: 10px;
         }
-
-        .product-card strong {
-            font-size: 18px;
-            display: block;
+        .product-category {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
             margin-bottom: 5px;
         }
-
-        .product-card a {
-            color: #5a2ef5;
-            text-decoration: none;
+        .add-button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            text-align: center;
+            background-color: #5a2ef5;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
             font-size: 14px;
         }
-
-        .product-card a:hover {
-            text-decoration: underline;
-        }
-
-        .cart-link {
-            display: inline-block;
-            margin-top: 40px;
-            padding: 12px 18px;
-            background: #5a2ef5;
-            color: white;
-            border-radius: 6px;
-            text-decoration: none;
-        }
-
-        .cart-link:hover {
-            background: #4729c9;
+        .add-button:hover {
+            background-color: #4729c9;
         }
     </style>
 </head>
 <body>
-    <h1>SK8 Clothing</h1>
-
-    <div class="auth-links">
-        {% if user.is_authenticated %}
-            Welcome, {{ user.username }}! <a href="{% url 'logout' %}">Logout</a>
-        {% else %}
-            <a href="{% url 'login' %}">Login</a>
-            <a href="{% url 'register' %}">Register</a>
-        {% endif %}
-    </div>
-
-    <div class="category-filter">
-        <h2>Filter by category:</h2>
-        <a href="{% url 'product_list' %}">All</a>
-        <a href="?category=hoodie">Hoodies</a>
-        <a href="?category=pants">Pants</a>
-        <a href="?category=shoes">Shoes</a>
-    </div>
-
+    <h1>Новинки</h1>
     <div class="product-grid">
         {% for product in products %}
-            <div class="product-card">
-                {% if product.image %}
-                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
-                {% else %}
-                    <img src="https://via.placeholder.com/250x200.png?text=No+Image" alt="No image available">
-                {% endif %}
-                <strong>{{ product.name }}</strong>
-                <div>${{ product.price }}</div>
-                <a href="{% url 'add_to_cart' product.id %}">Add to Cart</a>
+        <div class="product-card">
+            {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.name }}">
+            {% else %}
+            <img src="https://via.placeholder.com/300x300?text=No+Image" alt="No image">
+            {% endif %}
+            <div class="product-info">
+                <div class="product-category">{{ product.get_category_display }}</div>
+                <div class="product-name">{{ product.name }}</div>
+                <div class="product-price">{{ product.price }} zł</div>
+                <form action="{% url 'add_to_cart' product.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="add-button">Добавить в корзину</button>
+                </form>
             </div>
+        </div>
         {% endfor %}
     </div>
-
-    <a href="{% url 'cart' %}" class="cart-link">🛒 Go to Cart</a>
 </body>
 </html>
