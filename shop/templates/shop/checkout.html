@@ -8,15 +8,12 @@
             background: #f5f5f5;
             padding: 40px;
         }
-        h1 {
-            font-size: 28px;
-            margin-bottom: 20px;
-        }
         form {
             background: white;
             padding: 20px;
             border-radius: 8px;
             max-width: 500px;
+            margin: 0 auto;
         }
         input, select, button {
             display: block;
@@ -36,21 +33,14 @@
         button:hover {
             background-color: #4729c9;
         }
-        .readonly-field {
-            background-color: #eee;
+        .hidden {
+            display: none;
         }
     </style>
-    <script>
-        function togglePaymentFields() {
-            const method = document.getElementById('payment-method').value;
-            document.getElementById('card-fields').style.display = method === 'card' ? 'block' : 'none';
-            document.getElementById('crypto-fields').style.display = method === 'crypto' ? 'block' : 'none';
-        }
-    </script>
 </head>
 <body>
     <h1>Checkout</h1>
-    <form method="post">
+    <form method="post" id="checkout-form">
         {% csrf_token %}
 
         <input type="text" name="full_name" placeholder="Full Name" required>
@@ -58,34 +48,61 @@
         <input type="tel" name="phone" placeholder="Phone" required>
 
         <label for="payment-method">Payment Method:</label>
-        <select id="payment-method" name="payment_method" onchange="togglePaymentFields()" required>
+        <select id="payment-method" name="payment_method" required onchange="toggleFields()">
             <option value="">Select</option>
             <option value="card">Card</option>
             <option value="crypto">Crypto</option>
         </select>
 
-        <div id="card-fields" style="display: none;">
-            <input type="text" name="card_number" placeholder="Card Number" required>
-            <input type="text" name="expiry_date" placeholder="Expiry Date (MM/YY)" required>
-            <input type="text" name="cvv" placeholder="CVV" required>
+        <div id="card-fields" class="hidden">
+            <input type="text" name="card_number" placeholder="Card Number">
+            <input type="text" name="expiry_date" placeholder="Expiry Date (MM/YY)">
+            <input type="text" name="cvv" placeholder="CVV">
         </div>
 
-        <div id="crypto-fields" style="display: none;">
-            <label for="crypto_network">Crypto Network:</label>
-            <select name="crypto_network" required>
+        <div id="crypto-fields" class="hidden">
+            <select name="crypto_network">
                 <option value="">Choose network</option>
                 <option value="TRC20">TRC20</option>
                 <option value="BNB">BNB</option>
                 <option value="Ethereum">Ethereum</option>
                 <option value="Polygon">Polygon</option>
             </select>
-            <label>Wallet Address:</label>
-            <input type="text" name="wallet_address" class="readonly-field" value="3MQTRzttkMtsMEy9dRq4Sf1xiSsWKgQkyH" readonly>
+            <input type="text" name="wallet_address" value="3MQTRzttkMtsMEy9dRq4Sf1xiSsWKgQkyH" readonly>
         </div>
 
         <button type="submit">Submit Order</button>
     </form>
 
-    <script>togglePaymentFields();</script>
+    <script>
+        function toggleFields() {
+            const method = document.getElementById('payment-method').value;
+
+            const cardFields = document.getElementById('card-fields');
+            const cryptoFields = document.getElementById('crypto-fields');
+
+            // Очистка required перед установкой
+            document.querySelectorAll('#card-fields input').forEach(i => i.required = false);
+            document.querySelectorAll('#crypto-fields select, #crypto-fields input').forEach(i => i.required = false);
+
+            if (method === 'card') {
+                cardFields.classList.remove('hidden');
+                cryptoFields.classList.add('hidden');
+
+                document.querySelectorAll('#card-fields input').forEach(i => i.required = true);
+            } else if (method === 'crypto') {
+                cryptoFields.classList.remove('hidden');
+                cardFields.classList.add('hidden');
+
+                document.querySelectorAll('#crypto-fields select, #crypto-fields input').forEach(i => i.required = true);
+            } else {
+                cardFields.classList.add('hidden');
+                cryptoFields.classList.add('hidden');
+            }
+        }
+
+        // Вызываем при загрузке, если браузер восстанавливает select
+        window.addEventListener('DOMContentLoaded', toggleFields);
+    </script>
 </body>
 </html>
