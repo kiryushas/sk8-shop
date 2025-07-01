@@ -63,10 +63,7 @@ def register(request):
         form = UserCreationForm()
     return render(request, 'shop/register.html', {'form': form})
 
-from django.shortcuts import render, redirect, get_object_or_404
-from .models import Product, Order, OrderItem
-from .forms import OrderForm
-
+# Оформление заказа
 def checkout_view(request):
     cart = request.session.get('cart', [])
     if not cart:
@@ -77,7 +74,7 @@ def checkout_view(request):
         if form.is_valid():
             order = form.save(commit=False)
 
-            # Сохраняем платёжную информацию вручную
+            # Дополнительные данные оплаты
             order.payment_method = request.POST.get('payment_method')
             if order.payment_method == 'card':
                 order.card_number = request.POST.get('card_number')
@@ -87,23 +84,26 @@ def checkout_view(request):
                 order.crypto_network = request.POST.get('crypto_network')
                 order.wallet_address = request.POST.get('wallet_address')
 
-            # Привязка пользователя (если есть)
+            # Привязка пользователя
             if request.user.is_authenticated:
                 order.user = request.user
 
             order.save()
 
-            # Сохраняем товары из корзины
+            # Создание OrderItem
             for item in cart:
                 product = get_object_or_404(Product, id=item['product_id'])
                 OrderItem.objects.create(order=order, product=product, quantity=item['quantity'])
 
-            # Очищаем корзину
+            # Очистка корзины
             request.session['cart'] = []
 
-            return render(request, 'shop/checkout_success.html', {'order': order})
+            return redirect('order_confirmation')  # перекидываем на финальную страницу
     else:
         form = OrderForm()
 
     return render(request, 'shop/checkout.html', {'form': form})
 
+# Подтверждение заказа
+def order_confirmation_view(request):
+    return render(request, 'shop/order_confirmation.html')
