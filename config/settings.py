@@ -1,12 +1,14 @@
 from pathlib import Path
 import os
+import dj_database_url  # Обязательно добавь в requirements.txt
 
-# Базовая директория проекта
+# Базовая директория
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Безопасность
-SECRET_KEY = 'django-insecure-b0_tigo19e+hlid4!%6i^_obh(-c-ye_mhdu%nbqp$to_#o*1g'
-DEBUG = True
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-fallback-key')  # Лучше через переменные окружения
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
+
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'sk8-shop.onrender.com']
 
 # Установленные приложения
@@ -23,6 +25,7 @@ INSTALLED_APPS = [
 # Middleware
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # для статики на Render
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -31,14 +34,15 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# URL конфигурация
+# URL и WSGI
 ROOT_URLCONF = 'config.urls'
+WSGI_APPLICATION = 'config.wsgi.application'
 
 # Шаблоны
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],  # если будут кастомные шаблоны
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -51,18 +55,12 @@ TEMPLATES = [
     },
 ]
 
-# WSGI
-WSGI_APPLICATION = 'config.wsgi.application'
-
-# База данных
+# База данных (автоопределение от Render)
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.config(default=f'sqlite:///{BASE_DIR}/db.sqlite3')
 }
 
-# Валидация паролей
+# Пароли
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -70,19 +68,20 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-# Интернационализация
+# Язык и время
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-# Статические файлы (CSS, JS)
+# Статика
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # Для деплоя на Render
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# Медиафайлы (изображения товаров)
+# Медиа
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# Тип поля по умолчанию
+# Автополе
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
