@@ -178,7 +178,7 @@
                 <h3>{{ product.name }}</h3>
                 <p>{{ product.category }}</p>
                 <div class="price">{{ product.price }} zł</div>
-                <a href="{% url 'add_to_cart' product.id %}" class="btn">Добавить в корзину</a>
+                <a href="{% url 'add_to_cart' product.id %}" class="btn">Add to cart</a>
             </div>
         </div>
         {% endfor %}
@@ -186,7 +186,7 @@
 </div>
 
 <div class="cart-link">
-    <a href="{% url 'cart' %}">🛒 Перейти в корзину</a>
+    <a href="{% url 'cart' %}">🛒 Go to cart</a>
 </div>
 </body>
 </html>
